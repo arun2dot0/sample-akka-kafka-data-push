@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:int-kafka="http://www.springframework.org/schema/integration/kafka"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/integration/kafka http://www.springframework.org/schema/integration/kafka/spring-integration-kafka.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+		 
+	<int:channel id="inputToKafka">
+		<int:queue />
+	</int:channel>
+
+	<bean 
+		id="kafkaReflectionEncoder"
+		class="org.springframework.integration.kafka.serializer.avro.AvroReflectDatumBackedKafkaEncoder">
+		<constructor-arg value="java.lang.String" />
+	</bean>
+	
+	<bean 
+		id="kafkaSpecificEncoder"
+		class="org.springframework.integration.kafka.serializer.avro.AvroSpecificDatumBackedKafkaEncoder">
+		<constructor-arg
+			value="akka.kafka.example.datapush.avro.schema.EmployeeSchema" />
+	</bean> 
+
+
+	  <int-kafka:outbound-channel-adapter
+		id="kafkaOutboundChannelAdapter"
+		kafka-producer-context-ref="kafkaProducerContext"
+		channel="inputToKafka">
+		<int:poller 
+			fixed-delay="1000" time-unit="MILLISECONDS"
+			receive-timeout="0"/>
+	</int-kafka:outbound-channel-adapter>
+
+	<!--  use your docker-machine ip for the broker list -->
+	
+	<int-kafka:producer-context id="kafkaProducerContext">
+		<int-kafka:producer-configurations>
+			<int-kafka:producer-configuration
+				broker-list="192.168.99.100:9092"
+				topic="dm_atg_delivery_pref1" 
+				value-class-type="akka.kafka.example.datapush.avro.schema.EmployeeSchema"
+				key-class-type="java.lang.String"
+				value-encoder="kafkaSpecificEncoder"
+				key-encoder="kafkaReflectionEncoder"
+				compression-codec="default" />
+		</int-kafka:producer-configurations>
+	</int-kafka:producer-context> 
+
+</beans>

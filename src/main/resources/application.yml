@@ -1,0 +1,6 @@
+kafka:
+  broker:
+    address: 192.168.99.100:9092
+  zookeeper:
+    connect: 192.168.99.100:2181
+  topic: dm_atg_delivery_pref

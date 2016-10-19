@@ -1,0 +1,34 @@
+{"type" : "record",
+  "name" : "EmployeeSchema",
+  "namespace": "akka.kafka.example.datapush.avro.schema",
+ 
+  "fields" : [ 
+  {
+    "name" : "Id",
+    "type" : "long"
+  }, 
+  {
+    "name" : "firstName",
+    "type" : "string"
+  }, 
+   {
+    "name" : "lastName",
+    "type" : "string"
+  },
+   {
+    "name" : "title",
+    "type" : "string"
+  },
+     {
+    "name" : "createdDate",
+    "type" : "string",
+     "java-class":"java.util.Date"
+  },
+   {
+    "name" : "modifiedDate",
+    "type" : "string",
+     "java-class":"java.util.Date"
+  }
+   ],
+  "doc:" : "Schema for Employee"
+}
