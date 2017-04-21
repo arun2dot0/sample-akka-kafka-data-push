@@ -187,7 +187,7 @@
 		</pluginManagement>
 
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro-maven-plugin</artifactId>
 				<version>1.7.6</version>
@@ -204,7 +204,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

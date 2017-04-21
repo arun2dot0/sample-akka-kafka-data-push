@@ -33,13 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * A sample supervisor which should handle exceptions and general feedback for
- * the actual {@link com.equinix.akkaflow.actors.KafkaPushSupervisorActor}
- * <p/>
- * A router is configured at startup time, managing a pool of task actors.
- */
-
 @Scope("prototype")
 @javax.inject.Named("KafkaPushSupervisorActor")
 public class KafkaPushSupervisorActor extends UntypedActor {
@@ -89,9 +82,7 @@ public class KafkaPushSupervisorActor extends UntypedActor {
 	}
 
 	public List<EmployeeSchema> readOutputData() {
-	/*	Pageable limitOutput = new PageRequest(0, 10);
-		List<com.equinix.pue.dao.model.OutputData> listOutputData = outptuDataRepository
-				.findAll(new Sort(Sort.Direction.DESC, "readingTime")).subList(0, 9);*/
+	
 		 List<Employee> listOutputData = deliveryPrefRepository.findDatatoPush("N");
 		 listOutputData.forEach(dp->System.out.println("Employee from db "+dp));
 		return migrationUtil.copyOutputData(listOutputData);
