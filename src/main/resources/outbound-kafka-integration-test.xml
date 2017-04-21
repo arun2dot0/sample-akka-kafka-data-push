@@ -12,10 +12,11 @@
 		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd">
 
-	<int:channel id="inputToKafka">
-		<int:queue/>
+	<int:channel id="inputToKafka" >
+	<int:queue/>
 	</int:channel>
-
+	
+	
 	<bean id="kafkaInfo" class="akka.kafka.example.datapush.util.KafkaInfo" />
 
 	<bean id="kafkaReflectionEncoder"
@@ -29,23 +30,25 @@
 			value="akka.kafka.example.datapush.avro.schema.EmployeeSchema" />
 	</bean>
 
-	
 		<int-kafka:outbound-channel-adapter
-			id="kafkaOutboundChannelAdapter" kafka-producer-context-ref="kafkaProducerContext"
-			channel="inputToKafka">
-			 <int:poller fixed-delay="1000" time-unit="MILLISECONDS"
-				receive-timeout="0" />
-		</int-kafka:outbound-channel-adapter>
-		
+		id="kafkaOutboundChannelAdapter" kafka-producer-context-ref="kafkaProducerContext"
+		channel="inputToKafka">
+		 <int:poller fixed-delay="1000" time-unit="MILLISECONDS"
+				receive-timeout="500" />
+	</int-kafka:outbound-channel-adapter>
 
 
-
+	
+	
+<!-- 	<int:chain input-channel="inputToKafka"  order="2">
+		<int:service-activator  ref="kafkaInfo" method="sentStatus" />
+	</int:chain> -->
 	<!-- use your docker-machine ip for the broker list -->
 
 	<int-kafka:producer-context id="kafkaProducerContext">
 		<int-kafka:producer-configurations>
 			<int-kafka:producer-configuration
-				broker-list="192.168.99.100:32768" topic="kafka_test" async="true"
+				broker-list="192.168.99.100:9092" topic="kafka_test" async="true"
 				value-class-type="akka.kafka.example.datapush.avro.schema.EmployeeSchema"
 				key-class-type="java.lang.String" value-encoder="kafkaSpecificEncoder"
 				key-encoder="kafkaReflectionEncoder" compression-codec="default" />

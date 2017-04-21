@@ -45,11 +45,20 @@ public class KafkaPushActor extends UntypedActor {
 		log.info("Got Message to send");
 		log.info(deliveryPrefOutput.toString());
 	
-		channel.send(MessageBuilder.withPayload(deliveryPrefOutput)
+		boolean status = channel.send(MessageBuilder.withPayload(deliveryPrefOutput)
 				.build());
-		 ActorRef actor = getContext().actorOf(springExtension.props(
-	                "MarkOutputSentActor"));
-		actor.tell(migrationUtil.findOutput(deliveryPrefOutput), getSelf());
+		
+		if(status)
+		{
+			 ActorRef actor = getContext().actorOf(springExtension.props(
+		                "MarkOutputSentActor"));
+			actor.tell(migrationUtil.findOutput(deliveryPrefOutput), getSelf());
+		}
+		else
+		{
+			log.error("Unable to send message %s to Kafka", message.toString());
+		}
+		
 	}
 	
 	
